@@ -18,7 +18,7 @@ struct MovesArray {
     MovesArray<N> copy() {
         MovesArray<N> new_array;
         new_array.count = count;
-        std::memcpy(new_array.array.data(), array.data(), count * sizeof(Move));
+        std::memcpy(new_array.array, array, count * sizeof(Move));
         return new_array;
     }
 

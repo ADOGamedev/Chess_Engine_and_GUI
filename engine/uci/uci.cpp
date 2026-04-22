@@ -106,8 +106,7 @@ void UCIReader::read_command_position(std::string command) {
 
     while (str_stream >> token) {
         if (token == "startpos") {
-            engine->set_up_position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0");
-            return;
+            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0";
         }
         else if (token == "fen") {
             reading_fen = true;

@@ -8,7 +8,7 @@ void Engine::set_up_position(const std::string& fen, const std::string moves) {
         ZobristHasher::set_zobrist_key_of_state(state);
         state.add_curr_key_to_repetition_list();
 
-        MovesHistory::reset();
+        //MovesHistory::reset();
 
         if (!moves.empty()) {
             MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> moves_sequence = string_to_array_of_moves(moves);
@@ -35,7 +35,7 @@ MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> Engine::string_to_array_of_moves(const 
 }
 
 void Engine::do_moves_sequence(MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES>& sequence) {
-    for (Move& move : sequence.array) {
+    for (Move& move : sequence) {
         PieceType promotion_piece_type = move.promotion_piece_type;
         move = move_gen.create_move(move.from, move.to);
         move.promotion_piece_type = promotion_piece_type;
@@ -108,13 +108,8 @@ SearchResults Engine::search_best_move(int depth) {
     int alpha = -INF;
     int beta = INF;
 
-    MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> quiets_searched = {};
-
     for (const Move& move : moves) {
         nodes_searched++;
-        if (!move.is_capture()) {
-            quiets_searched.push(move);
-        }
 
         MoveExecutor::do_move(move, &state);
         int score = -negamax(depth - 1, -beta, -alpha, 1);
@@ -136,15 +131,6 @@ SearchResults Engine::search_best_move(int depth) {
         if (alpha >= beta) {
             if (!move.is_capture()) {
                 KillerMoves::insert_killer(move, 0);
-
-                int bonus = 300 * depth - 250;
-                MovesHistory::update(state.turn, move, bonus);
-                for (const Move& quiet : quiets_searched) {
-                    if (quiet == move) {
-                        continue;
-                    }
-                    MovesHistory::update(state.turn, quiet, -bonus);
-                }
             }
             break;
         }
@@ -198,12 +184,8 @@ int Engine::negamax(int depth, int alpha, int beta, int ply) {
     Move best_move;
 
     MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> moves = get_available_moves(hash_entry.move, ply);
-    MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> quiets_searched = {};
     for (const Move& move : moves) {
         nodes_searched++;
-        if (!move.is_capture()) {
-            quiets_searched.push(move);
-        }
 
         MoveExecutor::do_move(move, &state);
         int score = -negamax(depth - 1, -beta, -alpha, ply + 1);
@@ -225,15 +207,6 @@ int Engine::negamax(int depth, int alpha, int beta, int ply) {
         if (alpha >= beta) {
             if (!move.is_capture()) {
                 KillerMoves::insert_killer(move, ply);
-
-                int bonus = 300 * depth - 250;
-                MovesHistory::update(state.turn, move, bonus);
-                for (const Move& quiet : quiets_searched) {
-                    if (quiet == move) {
-                        continue;
-                    }
-                    MovesHistory::update(state.turn, quiet, -bonus);
-                }
             }
             break;
         }
@@ -384,7 +357,6 @@ MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> Engine::get_available_moves(const Move&
     sort_captures(captures);
     moves.insert_back(captures.begin(), captures.end());
     insert_killers_if_possible(moves, legal_killer_moves);
-    sort_quiets(quiets);
     moves.insert_back(quiets.begin(), quiets.end());
 
     return moves;

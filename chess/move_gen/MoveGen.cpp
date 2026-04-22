@@ -49,7 +49,7 @@ void MoveGen::add_all_promotions_to_available_moves(const Move& move) {
         Move promotion_move = move;
         promotion_move.promotion_piece_type = promotion_piece_type;
 
-        available_moves.push(move);
+        available_moves.push(promotion_move);
     }
 }
 
