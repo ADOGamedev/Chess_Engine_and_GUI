@@ -4,9 +4,9 @@ env = Environment( # type: ignore
     tools = ['g++', 'gcc', 'gnulink'],  
     CXX = 'g++',
     CC = 'gcc',
-    CXXFLAGS = ['-std=c++20', '-O2', '-Wall'],
+    CXXFLAGS = ['-std=c++20', '-O3', '-march=native', '-mtune=native', '-Wall', '-Wextra', '-Wno-unused-parameter'],
     CCFLAGS=["-w"],
-    LINKFLAGS=['-static', '-static-libgcc', '-static-libstdc++'],
+    LINKFLAGS=['-static', '-static-libgcc', '-static-libstdc++', '-s'],
     ENV = {
         'PATH': r'C:\\msys64\\mingw64\\bin;' + os.environ['PATH'],
         'TEMP': os.environ.get('TEMP', 'G:\\temp'), 
@@ -19,7 +19,7 @@ sources += Glob("./**/*.cpp") #type: ignore
 sources += Glob("./**/**/*.cpp") #type: ignore
 sources += Glob("../chess/**/*.cpp") #type: ignore
 
-excluded = ["game_between_engines_simulator", "uci_engine_communicator"]
+excluded = ["uci_engine_communicator"]
 sources = [f for f in sources if not any(ex in str(f) for ex in excluded)]
 
 env.Program(target="engine.exe", source=sources)

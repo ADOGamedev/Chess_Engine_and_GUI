@@ -19,7 +19,6 @@ sources = Glob("src/**/*.cpp") #type: ignore
 sources += Glob("../chess/**/*.cpp") #type: ignore
 sources += Glob("../chess/tests/**/*.cpp") #type: ignore
 sources += Glob("../engine/uci_engine_communicator/*.cpp") #type: ignore
-sources += Glob("../engine/game_between_engines_simulator/*.cpp") #type: ignore
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(

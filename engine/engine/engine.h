@@ -11,16 +11,19 @@
 #include "../../chess/move_gen/MoveGen.h"
 #include "../../chess/move_gen/MoveLegalizer.h"
 #include "../../chess/utils/utils.h"
+#include "../../chess/constants/constants.h"
 
 #include "../constants/constants.h"
 #include "../transposition_table/transposition_table.h"
 #include "../killer_moves/killer_moves.h"
 #include "../moves_history/moves_history.h"
 
-#include "../../chess/constants/MovesArray.h"
+//typedef std::chrono::high_resolution_clock::time_point time_point;
 
-typedef std::chrono::high_resolution_clock::time_point time_point;
-
+struct MoveList {
+    std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES> moves;
+    int count = 0;
+};
 
 struct SearchResults {
     Move best_move;
@@ -37,8 +40,8 @@ public:
     
     void set_up_position(const std::string& fen, const std::string moves = "");
 
-    MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> string_to_array_of_moves(const std::string& moves) const;
-    void do_moves_sequence(MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES>& sequence);
+    std::vector<Move> string_to_vector_of_moves(const std::string& moves) const;
+    void do_moves_sequence(std::vector<Move>& sequence);
 
     std::string go_depth(int depth);
     std::string go_time_inc(const int& wtime, const int& btime, const int& winc, const int& binc);
@@ -60,12 +63,14 @@ public:
 
 	bool has_search_timed_out() const;
 
-	MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> get_available_moves(const Move& hash_move, const int& ply);
-    void insert_killers_if_possible(MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES>& moves, MovesArray<KILLERS_PER_PLY>& killers);
-    MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES> get_available_captures() const;
+	MoveList get_vector_of_available_moves(const Move& hash_move, const int& ply);
+    void insert_killers_if_possible(MoveList& moves, std::array<Move, KILLERS_PER_PLY>& killers);
+    MoveList get_vector_of_available_captures() const;
 
-    void sort_captures(MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES>& captures) const;
-    void sort_quiets(MovesArray<MAX_POSSIBLE_AVAILABLE_MOVES>& quiets) const;
+    void sort_captures(std::vector<Move>& captures) const;
+    void sort_captures_array(std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES>& captures, int count) const;
+    void sort_quiets(std::vector<Move>& quiets) const;
+    void sort_quiets_array(std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES>& quiets, int count) const;
     
     GameState state = GameState();
     
@@ -75,6 +80,6 @@ private:
 
     int nodes_searched = 0;
 
-	time_point start_time = std::chrono::high_resolution_clock::now();
+	std::chrono::high_resolution_clock::time_point start_time = std::chrono::high_resolution_clock::now();
     int max_time = INT_MAX;
 };
