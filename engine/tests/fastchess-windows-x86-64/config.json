@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 3557304717094636577,
+    "seed": 1749180623072760905,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -70,7 +70,7 @@
     "autosaveinterval": 20,
     "games": 2,
     "rounds": 500000,
-    "concurrency": 13,
+    "concurrency": 10,
     "force_concurrency": false,
     "recover": false,
     "noswap": false,
@@ -88,9 +88,9 @@
     },
     "engines": [
         {
-            "name": "ADOCE MOVES HEURISTIC",
+            "name": "ADOCE FAST 4",
             "dir": "",
-            "cmd": "D:\\My Projects\\Chess Engine and GUI\\engine\\engine_versions2\\engine_moves_heuristic.exe",
+            "cmd": "D:\\My Projects\\Chess Engine and GUI\\engine\\engine_versions2\\engine_fast4.exe",
             "args": "",
             "restart": false,
             "options": [],
@@ -108,9 +108,9 @@
             "variant": 0
         },
         {
-            "name": "ADOCE KILLERS",
+            "name": "ADOCE MOVES HEURISTIC 2",
             "dir": "",
-            "cmd": "D:\\My Projects\\Chess Engine and GUI\\engine\\engine_versions2\\engine_killers.exe",
+            "cmd": "D:\\My Projects\\Chess Engine and GUI\\engine\\engine_versions2\\engine_moves_heuristic_2.exe",
             "args": "",
             "restart": false,
             "options": [],
@@ -129,16 +129,16 @@
         }
     ],
     "stats": {
-        "ADOCE MOVES HEURISTIC vs ADOCE KILLERS": {
-            "wins": 27,
-            "losses": 33,
-            "draws": 56,
-            "penta_WW": 0,
-            "penta_WD": 15,
-            "penta_WL": 12,
-            "penta_DD": 12,
-            "penta_LD": 17,
-            "penta_LL": 2
+        "ADOCE FAST 4 vs ADOCE MOVES HEURISTIC 2": {
+            "wins": 1066,
+            "losses": 985,
+            "draws": 1861,
+            "penta_WW": 102,
+            "penta_WD": 513,
+            "penta_WL": 349,
+            "penta_DD": 451,
+            "penta_LD": 446,
+            "penta_LL": 95
         }
     }
 }

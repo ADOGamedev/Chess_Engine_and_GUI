@@ -11,14 +11,19 @@
 #include "../../chess/move_gen/MoveGen.h"
 #include "../../chess/move_gen/MoveLegalizer.h"
 #include "../../chess/utils/utils.h"
+#include "../../chess/constants/constants.h"
 
 #include "../constants/constants.h"
 #include "../transposition_table/transposition_table.h"
 #include "../killer_moves/killer_moves.h"
 #include "../moves_history/moves_history.h"
 
-typedef std::chrono::high_resolution_clock::time_point time_point;
+//typedef std::chrono::high_resolution_clock::time_point time_point;
 
+struct MoveList {
+    std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES> moves;
+    int count = 0;
+};
 
 struct SearchResults {
     Move best_move;
@@ -58,12 +63,14 @@ public:
 
 	bool has_search_timed_out() const;
 
-	std::vector<Move> get_vector_of_available_moves(const Move& hash_move, const int& ply);
-    void insert_killers_if_possible(std::vector<Move>& moves, std::array<Move, KILLERS_PER_PLY>& killers);
-    std::vector<Move> get_vector_of_available_captures() const;
+	MoveList get_vector_of_available_moves(const Move& hash_move, const int& ply);
+    void insert_killers_if_possible(MoveList& moves, std::array<Move, KILLERS_PER_PLY>& killers);
+    MoveList get_vector_of_available_captures() const;
 
     void sort_captures(std::vector<Move>& captures) const;
+    void sort_captures_array(std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES>& captures, int count) const;
     void sort_quiets(std::vector<Move>& quiets) const;
+    void sort_quiets_array(std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES>& quiets, int count) const;
     
     GameState state = GameState();
     
@@ -73,6 +80,6 @@ private:
 
     int nodes_searched = 0;
 
-	time_point start_time = std::chrono::high_resolution_clock::now();
+	std::chrono::high_resolution_clock::time_point start_time = std::chrono::high_resolution_clock::now();
     int max_time = INT_MAX;
 };

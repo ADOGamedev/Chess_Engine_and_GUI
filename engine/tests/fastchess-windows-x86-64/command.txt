@@ -1,8 +1,8 @@
 ./fastchess.exe 
+-engine cmd="D:\My Projects\Chess Engine and GUI\engine\engine_versions2\engine_fast4.exe" name="ADOCE FAST 4" 
 -engine cmd="D:\My Projects\Chess Engine and GUI\engine\engine_versions2\engine_moves_heuristic_2.exe" name="ADOCE MOVES HEURISTIC 2" 
--engine cmd="D:\My Projects\Chess Engine and GUI\engine\engine_versions2\engine_killers.exe" name="ADOCE KILLERS" 
 -openings file=book.epd format=epd order=random 
--each tc=8+0.8 -rounds 500000 -concurrency 13 
+-each tc=8+0.8 -rounds 500000 -concurrency 10 
 -sprt elo0=0 elo1=10 alpha=0.05 beta=0.05 
 
 

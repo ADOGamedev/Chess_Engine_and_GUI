@@ -10,6 +10,5 @@ int main() {
     Engine engine = Engine();
     UCIReader uci_reader = UCIReader(&engine);
 
-    //CheckmateEvalTester::test_checkmate_eval();
     uci_reader.read_input();
 }

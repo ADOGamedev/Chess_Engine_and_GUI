@@ -96,24 +96,26 @@ SearchResults Engine::search_best_move(int depth) {
 
     prepare_move_generation();
 
-    std::vector<Move> moves = get_vector_of_available_moves(hash_entry.move, 0);
+    MoveList moves = get_vector_of_available_moves(hash_entry.move, 0);
 
-    if (moves.empty()) {
+    if (moves.count == 0) {
         return {Move(), 0};
     }
     
-    Move best_move = moves[0];
+    Move best_move = moves.moves[0];
     int best_score = -INF;
 
     int alpha = -INF;
     int beta = INF;
 
-    std::vector<Move> quiets_searched = {};
+    std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES> quiets_searched;
+    int quiets_searched_count = 0;
 
-    for (const Move& move : moves) {
+    for (int i = 0; i < moves.count; i++) {
+        const Move& move = moves.moves[i];
         nodes_searched++;
         if (!move.is_capture()) {
-            quiets_searched.push_back(move);
+            quiets_searched[quiets_searched_count++] = move;
         }
 
         MoveExecutor::do_move(move, &state);
@@ -139,14 +141,12 @@ SearchResults Engine::search_best_move(int depth) {
 
                 int bonus = 300 * depth - 250;
                 MovesHistory::update(state.turn, move, bonus);
-                for (const Move& quiet : quiets_searched) {
-                    if (quiet == move) {
-                        continue;
-                    }
-                    MovesHistory::update(state.turn, quiet, -bonus);
-                }
             }
             break;
+        }
+        else if (!move.is_capture()) {
+            int bonus = 300 * depth - 250;
+            MovesHistory::update(state.turn, move, -bonus);
         }
     }
 
@@ -197,13 +197,11 @@ int Engine::negamax(int depth, int alpha, int beta, int ply) {
     int best_score = -INF;
     Move best_move;
 
-    std::vector<Move> moves = get_vector_of_available_moves(hash_entry.move, ply);
-    std::vector<Move> quiets_searched = {};
-    for (const Move& move : moves) {
+    MoveList moves = get_vector_of_available_moves(hash_entry.move, ply);
+    
+    for (int i = 0; i < moves.count; i++) {
+        const Move& move = moves.moves[i];
         nodes_searched++;
-        if (!move.is_capture()) {
-            quiets_searched.push_back(move);
-        }
 
         MoveExecutor::do_move(move, &state);
         int score = -negamax(depth - 1, -beta, -alpha, ply + 1);
@@ -228,14 +226,12 @@ int Engine::negamax(int depth, int alpha, int beta, int ply) {
 
                 int bonus = 300 * depth - 250;
                 MovesHistory::update(state.turn, move, bonus);
-                for (const Move& quiet : quiets_searched) {
-                    if (quiet == move) {
-                        continue;
-                    }
-                    MovesHistory::update(state.turn, quiet, -bonus);
-                }
             }
             break;
+        }
+        else if (!move.is_capture()) {
+            int bonus = 300 * depth - 250;
+            MovesHistory::update(state.turn, move, -bonus);
         }
     }
 
@@ -278,9 +274,10 @@ int Engine::quiescence(int alpha, int beta) {
     }
     alpha = std::max(alpha, eval);
 
-    std::vector<Move> captures = get_vector_of_available_captures();
+    MoveList captures = get_vector_of_available_captures();
 
-    for (Move move : captures) {
+    for (int i = 0; i < captures.count; i++) {
+        const Move& move = captures.moves[i];
         MoveExecutor::do_move(move, &state);
         int score = -quiescence(-beta, -alpha);
         MoveExecutor::undo_move(move, &state);
@@ -338,22 +335,24 @@ std::string Engine::report_best_move(const Move& move) const {
 }
 
 bool Engine::has_search_timed_out() const {
-    time_point now = std::chrono::high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
 
     return elapsed >= max_time;
 }
 
-std::vector<Move> Engine::get_vector_of_available_moves(const Move& hash_move, const int& ply) {
-    std::vector<Move> moves;
-    moves.reserve(move_gen.available_moves_count);
+MoveList Engine::get_vector_of_available_moves(const Move& hash_move, const int& ply) {
+    MoveList result = {};
+    
+    std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES> captures;
+    std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES> quiets;
+    int captures_count = 0;
+    int quiets_count = 0;
 
-    std::vector<Move> captures;
-    std::vector<Move> quiets;
     std::array<Move, KILLERS_PER_PLY> killers = KillerMoves::get_killers(ply);
-
+    
     Move legal_hash_move;
-    std::array<Move, KILLERS_PER_PLY> legal_killer_moves;
+    std::array<Move, KILLERS_PER_PLY> legal_killer_moves = {};
 
     for (int i = 0; i < move_gen.available_moves_count; i++) {
         const Move& move = move_gen.available_moves[i];
@@ -373,51 +372,62 @@ std::vector<Move> Engine::get_vector_of_available_moves(const Move& hash_move, c
         }
 
         if (move.is_capture()){
-            captures.push_back(move);
+            captures[captures_count++] = move;
             continue;
         }
 
-        quiets.push_back(move);
+        quiets[quiets_count++] = move;
     }
+
     if (legal_hash_move.is_valid()) {
-        moves.push_back(legal_hash_move);
+        result.moves[result.count++] = legal_hash_move;
     }
 
-    sort_captures(captures);
-    moves.insert(moves.end(), captures.begin(), captures.end());
-    insert_killers_if_possible(moves, legal_killer_moves);
-    sort_quiets(quiets);
-    moves.insert(moves.end(), quiets.begin(), quiets.end());
+    sort_captures_array(captures, captures_count);
+    for (int i = 0; i < captures_count; i++) {
+        result.moves[result.count++] = captures[i];
+    }
+    
+    insert_killers_if_possible(result, legal_killer_moves);
+    
+    sort_quiets_array(quiets, quiets_count);
+    for (int i = 0; i < quiets_count; i++) {
+        result.moves[result.count++] = quiets[i];
+    }
 
-    return moves;
+    return result;
 }
 
-void Engine::insert_killers_if_possible(std::vector<Move>& moves, std::array<Move, KILLERS_PER_PLY>& killers) {
+void Engine::insert_killers_if_possible(MoveList& moves, std::array<Move, KILLERS_PER_PLY>& killers) {
     if (killers[0].is_valid()) {
-        moves.push_back(killers[0]);
+        moves.moves[moves.count++] = killers[0];
     }
     if (killers[1].is_valid()) {
-        moves.push_back(killers[1]);
+        moves.moves[moves.count++] = killers[1];
     }
 }
 
-std::vector<Move> Engine::get_vector_of_available_captures() const {
-    std::vector<Move> moves;
-    moves.reserve(move_gen.available_moves_count);
+MoveList Engine::get_vector_of_available_captures() const {
+    MoveList result = {};
+    std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES> captures;
+    int captures_count = 0;
 
     for (int i = 0; i < move_gen.available_moves_count; i++) {
         if (move_gen.available_moves[i].is_capture()) {
-            moves.push_back(move_gen.available_moves[i]);
+            captures[captures_count++] = move_gen.available_moves[i];
         }
     }
 
-    sort_captures(moves);
+    sort_captures_array(captures, captures_count);
 
-    return moves;
+    for (int i = 0; i < captures_count; i++) {
+        result.moves[result.count++] = captures[i];
+    }
+    return result;
 }
 
-void Engine::sort_captures(std::vector<Move>& captures) const {
-    std::sort(captures.begin(), captures.end(), [](const Move& a, const Move& b) {
+void Engine::sort_captures_array(std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES>& captures, int count) const {
+    std::sort(captures.begin(), captures.begin() + count, [](const Move& a, const Move& b) {
         PieceType victim_a = piece_to_piece_type[a.captured_piece];
         PieceType attacker_a = piece_to_piece_type[a.moved_piece];
         PieceType victim_b = piece_to_piece_type[b.captured_piece];
@@ -429,11 +439,12 @@ void Engine::sort_captures(std::vector<Move>& captures) const {
     });
 }
 
-void Engine::sort_quiets(std::vector<Move>& quiets) const {
-      std::sort(quiets.begin(), quiets.end(), [this](const Move& a, const Move& b) {
+
+void Engine::sort_quiets_array(std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES>& quiets, int count) const {
+    std::sort(quiets.begin(), quiets.begin() + count, [this](const Move& a, const Move& b) {
         int score_a = MovesHistory::get_score(state.turn, a);
         int score_b = MovesHistory::get_score(state.turn, b);
 
         return score_a > score_b;
-    });  
+    });
 }
