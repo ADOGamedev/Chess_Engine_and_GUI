@@ -189,13 +189,18 @@ int Engine::negamax(int depth, int alpha, int beta, int ply) {
     }
 
     if (depth >= 3 && !move_legalizer.is_in_check()) {
+        Square en_passant = state.en_passant;
+        Square en_passant_capture = state.en_passant_capture;
+
         MoveExecutor::do_null_move(&state);
         int score = -negamax(depth - 3, -beta, -beta + 1, ply + 1);
-        MoveExecutor::undo_null_move(&state);
+        MoveExecutor::undo_null_move(&state, en_passant, en_passant_capture);
 
         if (score >= beta) {
             return beta;
         }
+        
+        prepare_move_generation();
     }
 
     int best_score = -INF;

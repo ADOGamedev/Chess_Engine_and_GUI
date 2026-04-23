@@ -105,3 +105,14 @@ Games: 586, Wins: 326, Losses: 220, Draws: 40, Points: 346.0 (59.04 %)
 Ptnml(0-2): [35, 23, 129, 13, 93], WL/DD Ratio: 63.50
 LLR: 2.95 (100.1%) (-2.94, 2.94) [0.00, 10.00]
 --------------------------------------------------
+
+
+"ADOCE NMP" - "ADOCE MOVES HEURISTIC"
+--------------------------------------------------
+Results of ADOCE NMP vs ADOCE MOVES HEURISTIC 3 (8+0.8, NULL, NULL, book.epd):
+Elo: 97.73 +/- 28.92, nElo: 133.43 +/- 37.37
+LOS: 100.00 %, DrawRatio: 31.33 %, PairsRatio: 3.96
+Games: 332, Wins: 141, Losses: 50, Draws: 141, Points: 211.5 (63.70 %)
+Ptnml(0-2): [6, 17, 52, 62, 29], WL/DD Ratio: 0.68
+LLR: 2.96 (100.5%) (-2.94, 2.94) [0.00, 10.00]
+--------------------------------------------------

@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 15047480442959329446,
+    "seed": 2410955683184770622,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -88,6 +88,26 @@
     },
     "engines": [
         {
+            "name": "ADOCE NMP",
+            "dir": "",
+            "cmd": "D:\\My Projects\\Chess Engine and GUI\\engine\\engine_versions2\\engine_nmp.exe",
+            "args": "",
+            "restart": false,
+            "options": [],
+            "limit": {
+                "tc": {
+                    "increment": 800,
+                    "fixed_time": 0,
+                    "time": 8000,
+                    "moves": 0,
+                    "timemargin": 0
+                },
+                "nodes": 0,
+                "plies": 0
+            },
+            "variant": 0
+        },
+        {
             "name": "ADOCE MOVES HEURISTIC 3",
             "dir": "",
             "cmd": "D:\\My Projects\\Chess Engine and GUI\\engine\\engine_versions2\\engine_moves_heuristic_3.exe",
@@ -106,39 +126,19 @@
                 "plies": 0
             },
             "variant": 0
-        },
-        {
-            "name": "ADOCE FAST 4",
-            "dir": "",
-            "cmd": "D:\\My Projects\\Chess Engine and GUI\\engine\\engine_versions2\\engine_fast4.exe",
-            "args": "",
-            "restart": false,
-            "options": [],
-            "limit": {
-                "tc": {
-                    "increment": 800,
-                    "fixed_time": 0,
-                    "time": 8000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
         }
     ],
     "stats": {
-        "ADOCE MOVES HEURISTIC 3 vs ADOCE FAST 4": {
-            "wins": 155,
-            "losses": 143,
-            "draws": 302,
-            "penta_WW": 16,
-            "penta_WD": 76,
-            "penta_WL": 47,
-            "penta_DD": 79,
-            "penta_LD": 68,
-            "penta_LL": 14
+        "ADOCE NMP vs ADOCE MOVES HEURISTIC 3": {
+            "wins": 141,
+            "losses": 50,
+            "draws": 141,
+            "penta_WW": 29,
+            "penta_WD": 62,
+            "penta_WL": 21,
+            "penta_DD": 31,
+            "penta_LD": 17,
+            "penta_LL": 6
         }
     }
 }

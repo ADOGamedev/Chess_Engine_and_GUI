@@ -13,7 +13,7 @@ public:
     static void undo_move(const Move& move, GameState* game_state);
 
     static void do_null_move(GameState* game_state);
-    static void undo_null_move(GameState* game_state);
+    static void undo_null_move(GameState* game_state, const Square& prev_en_passant, const Square& prev_en_passant_capture);
     
 private:
     void move_piece() const;
