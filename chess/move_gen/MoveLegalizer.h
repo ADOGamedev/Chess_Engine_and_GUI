@@ -25,6 +25,8 @@ public:
     void calculate_pins_and_checks();
     void legalize_moves();
 
+    bool is_in_check();
+
 private:
     void calculate_pins();
     

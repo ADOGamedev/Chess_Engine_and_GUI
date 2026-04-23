@@ -255,6 +255,10 @@ bool MoveLegalizer::is_king_in_check(const Colour colour) {
     return is_square_under_attack(king_square);
 }
 
+bool MoveLegalizer::is_in_check() {
+    return ~state->check_mask != 0ULL;
+}
+
 bool MoveLegalizer::is_square_under_attack(const Square square) {
     return attackers_for_square(square);
 }

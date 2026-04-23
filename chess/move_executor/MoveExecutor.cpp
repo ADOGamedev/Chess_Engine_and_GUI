@@ -27,6 +27,26 @@ void MoveExecutor::undo_move(const Move& move, GameState* state) {
     state->remove_last_move_from_history();
 }
 
+void MoveExecutor::do_null_move(GameState* state) {
+    state->en_passant = SQ_NONE;
+    state->en_passant_capture = SQ_NONE;
+
+    state->switch_turns();
+
+    ZobristHasher::set_zobrist_key_of_state(*state);
+    state->add_curr_key_to_repetition_list();
+}
+
+void MoveExecutor::undo_null_move(GameState* state) {
+    state->switch_turns();
+    
+    ZobristHasher::set_zobrist_key_of_state(*state);
+    state->remove_last_key_from_repetition_list();
+
+    state->remove_last_move_from_history();
+}
+
+
 void MoveExecutor::move_piece() const {
     handle_capture();
     handle_castling();

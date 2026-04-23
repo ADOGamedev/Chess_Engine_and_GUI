@@ -12,6 +12,9 @@ public:
     static void do_move(const Move& move, GameState* game_state);
     static void undo_move(const Move& move, GameState* game_state);
 
+    static void do_null_move(GameState* game_state);
+    static void undo_null_move(GameState* game_state);
+    
 private:
     void move_piece() const;
 

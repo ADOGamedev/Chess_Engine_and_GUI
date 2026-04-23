@@ -108,15 +108,9 @@ SearchResults Engine::search_best_move(int depth) {
     int alpha = -INF;
     int beta = INF;
 
-    std::array<Move, MAX_POSSIBLE_AVAILABLE_MOVES> quiets_searched;
-    int quiets_searched_count = 0;
-
     for (int i = 0; i < moves.count; i++) {
         const Move& move = moves.moves[i];
         nodes_searched++;
-        if (!move.is_capture()) {
-            quiets_searched[quiets_searched_count++] = move;
-        }
 
         MoveExecutor::do_move(move, &state);
         int score = -negamax(depth - 1, -beta, -alpha, 1);
@@ -192,6 +186,16 @@ int Engine::negamax(int depth, int alpha, int beta, int ply) {
         
         if (alpha >= beta)
             return hash_eval;
+    }
+
+    if (depth >= 3 && !move_legalizer.is_in_check()) {
+        MoveExecutor::do_null_move(&state);
+        int score = -negamax(depth - 3, -beta, -beta + 1, ply + 1);
+        MoveExecutor::undo_null_move(&state);
+
+        if (score >= beta) {
+            return beta;
+        }
     }
 
     int best_score = -INF;

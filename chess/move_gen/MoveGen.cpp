@@ -1,7 +1,7 @@
 #include "MoveGen.h"
 
 void MoveGen::update_available_legal_moves() {
-    available_moves.count = 0;
+    available_moves_count = 0;
 
     for (Square square = SQ_0; square < N_SQUARES; square++) {
         if (state->is_enemy(square)) {
@@ -38,19 +38,24 @@ void MoveGen::update_available_moves_for_square(const Square square) {
             continue;
         }
 
-        available_moves.push(move);
+        add_move_to_available_moves(move);
     }
 }
 
 void MoveGen::add_all_promotions_to_available_moves(const Move& move) {
-    PieceType promotion_piece_types[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
+    std::array<PieceType, 4> promotion_piece_types = {KNIGHT, BISHOP, ROOK, QUEEN};
 
     for (PieceType promotion_piece_type : promotion_piece_types) {
         Move promotion_move = move;
         promotion_move.promotion_piece_type = promotion_piece_type;
 
-        available_moves.push(promotion_move);
+        add_move_to_available_moves(promotion_move);
     }
+}
+
+void MoveGen::add_move_to_available_moves(const Move& move) {
+    available_moves[available_moves_count] = move;
+    available_moves_count++;
 }
 
 bool MoveGen::can_move_to_square(const Square square) const {
@@ -211,4 +216,3 @@ Move MoveGen::create_move(const Square from, const Square to) const {
     MoveFlagAssigner::assign_corresponding_flag_to(move, state);
     return move;
 }
-

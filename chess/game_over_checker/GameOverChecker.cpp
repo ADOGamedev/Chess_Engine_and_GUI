@@ -29,7 +29,7 @@ GameOverType GameOverChecker::check_game_over(GameState& state) {
 
 bool GameOverChecker::is_there_any_move_availale() {
     move_gen.update_available_legal_moves();
-    return move_gen.available_moves.count > 0;
+    return move_gen.available_moves_count > 0;
 }
 
 bool GameOverChecker::is_three_fold_repetition() {
