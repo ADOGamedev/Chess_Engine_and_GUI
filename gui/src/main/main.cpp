@@ -67,6 +67,8 @@ void Main::_ready() {
     board_renderer.draw_board();
     
     timer_manager.update_timer_labels(board_renderer.board_flipped);
+
+    PolyglotZobristTester::test_polyglot_zobrist();
 }
 
 void Main::setup_start_position() {

@@ -5,10 +5,12 @@
 #include "engine/engine.h"
 
 #include "tests/checkmate_eval_test/CheckmateEvalTester.h"
+#include "opening_book/opening_book.h"
 
 int main() {
     Engine engine = Engine();
     UCIReader uci_reader = UCIReader(&engine);
 
-    uci_reader.read_input();
+    OpeningBook::init();
+    //uci_reader.read_input();
 }

@@ -33,6 +33,7 @@
 #include "../../chess/tests/fen_loader_test/fen_loader_test.h"
 #include "../../chess/tests/perft/perft.h"
 #include "../../chess/tests/zobrist_collisions_test/ZobristCollisionsTester.h"
+#include "../../chess/tests/polyglot_zobrist_test/PolyglotZobristTester.h"
 
 #include "../board_renderer/BoardRenderer.h"
 #include "../board_controller/BoardController.h"
