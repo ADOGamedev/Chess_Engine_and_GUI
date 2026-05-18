@@ -33,6 +33,9 @@ Accessed by clicking the gear icon in the top-right corner.
 - **FEN of current position**: the current position written in FEN[^3] notation.
 
 - **Starting FEN**: the position (written in FEN[^3] notation) from which the game will start.
+> [!WARNING]
+> When typing manually in this field, it will behave weirdly. Though you can do Copy-Paste.
+> I will fix this eventually
 
 - **Volume**: controls the volume of subtle sound effects when a piece is moved.
 
