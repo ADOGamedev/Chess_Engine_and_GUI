@@ -63,8 +63,7 @@ func _on_fen_reload_button_pressed() -> void:
 	should_set_game_config = true
 	starting_fen_line_edit.text = STARTING_FEN
 
-func _on_starting_fen_line_edit_text_changed(new_text: String) -> void:
-	set_starting_fen(new_text)
+func _on_starting_fen_line_edit_text_changed(_new_text: String) -> void:
 	should_set_game_config = true
 
 func _on_volume_slider_value_changed(value: float) -> void:

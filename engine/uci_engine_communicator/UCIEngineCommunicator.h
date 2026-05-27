@@ -12,7 +12,7 @@
 #include "../../chess/logger/Logger.h"
 
 class UCIEngineCommunicator {
-    public:
+public:
     UCIEngineCommunicator() :
     pipe_reader(&out_read) {}
     

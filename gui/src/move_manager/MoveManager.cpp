@@ -66,9 +66,11 @@ void MoveManager::make_ai_move() {
         
         best_move = move_gen->create_move(best_move.from, best_move.to);
         best_move.promotion_piece_type = promotion_piece_type;
-        
-        do_move_and_update_graphics(best_move);
-        state->add_move_to_history(best_move);
+
+        if (state->turn != player_colour) {
+            do_move_and_update_graphics(best_move);
+            state->add_move_to_history(best_move);
+        }
 
         } catch (const UCIEngineException& e) {
             gui->display_error(e);
@@ -93,8 +95,10 @@ void MoveManager::undo_move_and_update_graphics(const Move& move) {
 void MoveManager::go_back_one_move() {
     if (can_go_back_one_move()) {
         Colour prev_turn = state->turn;
-        undo_move_and_update_graphics(state->moves_history[curr_move_index]);
+        Move& move = state->moves_history[curr_move_index];
+        undo_move_and_update_graphics(move);
         state->turn = prev_turn;
+        board_renderer->hightlight_move(move);
     }
 }
 
@@ -105,8 +109,10 @@ bool MoveManager::can_go_back_one_move() {
 void MoveManager::advance_one_move() {
     if (can_advance_one_move()) {
         Colour prev_turn = state->turn;
-        do_move_and_update_graphics(state->moves_history[curr_move_index + 1]);
+        Move& move = state->moves_history[curr_move_index + 1];
+        do_move_and_update_graphics(move);
         state->turn = prev_turn;
+        board_renderer->hightlight_move(move);
     }
 }
 

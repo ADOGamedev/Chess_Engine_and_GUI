@@ -75,6 +75,7 @@ void MoveExecutor::handle_castling() const {
 void MoveExecutor::update_castling_rights() const {
     PieceType moved_piece_type = piece_to_piece_type[move.moved_piece];
     PieceType captured_piece_type = piece_to_piece_type[move.captured_piece];
+    Colour colour = piece_to_color[move.moved_piece];
 
     if (moved_piece_type == ROOK) {
         try_revoke_castling_for_rook(move.from);
@@ -85,7 +86,7 @@ void MoveExecutor::update_castling_rights() const {
     }
 
     if (moved_piece_type == KING) {
-        revoke_all_castlings_for_colour(state->turn);
+        revoke_all_castlings_for_colour(colour);
     }
 }
 
@@ -202,7 +203,7 @@ void MoveExecutor::handle_undo_castling() const {
     }
 
     Castling castling = king_destination_square_to_castling[move.to];
-    Colour turn_colour = state->turn;
+    Colour turn_colour = piece_to_color[move.moved_piece];
 
     Move rook_move = castling_moves_for_rook[castling];
     Piece piece_to_move = turn_colour == WHITE ? WHITE_ROOK : BLACK_ROOK;
