@@ -160,6 +160,8 @@ void Main::on_previous_move_button_pressed() {
     }
 
     move_manager.go_back_one_move(); 
+
+    gui.update_curr_fen_in_settings_menu();
 }
 
 void Main::on_next_move_button_pressed() {
@@ -171,6 +173,8 @@ void Main::on_next_move_button_pressed() {
     }
 
     move_manager.advance_one_move();
+
+    gui.update_curr_fen_in_settings_menu();
 }
 
 void Main::flip_board() {

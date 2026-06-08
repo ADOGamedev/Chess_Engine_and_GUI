@@ -35,8 +35,19 @@ std::string UCIEngineCommunicator::find_best_move(const TimeStruct& time_struct)
         time_struct.wtime, time_struct.btime, time_struct.winc, time_struct.binc
     ));
 
+    std::jthread stop_thread([this](std::stop_token st) {
+        if (!st.stop_requested()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+        }
+        if (!st.stop_requested()) {
+            send_command("stop");
+        }
+    });
+
     std::string best_move = pipe_reader.read_and_find_substring("bestmove");
 
+    stop_thread.request_stop();
+    
     if (best_move.empty()) {
         throw BestMoveNotFoundException();
     }
