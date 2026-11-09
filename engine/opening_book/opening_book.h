@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <numeric>
+#include <climits>
 
 #include "../../chess/utils/utils.h"
 #include "../../chess/move_gen/Move.h"

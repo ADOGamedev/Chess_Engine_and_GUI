@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 
 #include "../game_state/GameState.h"
 #include "../move_gen/MoveGen.h"
